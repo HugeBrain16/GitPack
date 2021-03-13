@@ -20,4 +20,4 @@ to install a package type the following command:</br>
 - `-q --quiet`, Disable some installation progress messages.
 - `--keep_source`, Keep the package source after installation complete (without token name).
 
-the supported packages usually have the `setup.py` file in the main branch.
+the supported packages usually have the `setup.py` file in the 'default' branch.
