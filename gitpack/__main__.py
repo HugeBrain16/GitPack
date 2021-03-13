@@ -37,7 +37,8 @@ class PackageError(Exception):
 
 class Pack:
 	def install(user, repo, keep_source=False, quiet=False):
-		import requests, zipfile, os, sys, subprocess, shutil, random
+		import requests, zipfile, os, sys, subprocess, shutil, random, site
+		from distutils.dir_util import copy_tree
 
 		print('Preparing to install package...') # huehue
 
@@ -105,8 +106,15 @@ class Pack:
 
 		# installing
 		os.chdir(f'{repo}-{branch}/') # hmm...
-		if not quiet: subprocess.check_call([sys.executable, 'setup.py', 'install', '--user'])
-		else: subprocess.check_call([sys.executable, 'setup.py', '-q', 'install', '--user'])
+		if not quiet: subprocess.check_call([sys.executable, 'setup.py', 'build'])
+		else: subprocess.check_call([sys.executable, 'setup.py', '-q', 'build'])
+		for d in os.listdir('build/lib/'):
+			try:
+				os.mkdir(f'{site.getsitepackages()[1]}\\{d}')
+			except FileExistsError:
+				shutil.rmtree(f'{site.getsitepackages()[1]}\\{d}')
+				os.mkdir(f'{site.getsitepackages()[1]}\\{d}')
+			copy_tree(f'build/lib/{d}',f"{site.getsitepackages()[1]}\\{d}")
 		os.chdir('../') #hmm......
 
 		# clean temp files
@@ -114,6 +122,78 @@ class Pack:
 		if not keep_source: os.remove(f'{token}_{repo}.zip')
 		shutil.rmtree(f'{repo}-{branch}')
 		print('Package has been successfully installed!')
+
+	def uninstall(user, repo, keep_source=False, quiet=False):
+		import requests, zipfile, os, sys, subprocess, shutil, random, site
+		from distutils.dir_util import copy_tree
+
+		keep_source=False # Override
+
+		print('Preparing to uninstall package...') # huehue
+
+		# check user
+		if not quiet: print('Checking github user...')
+		r = requests.get(f'https://github.com/{user}')
+		if r.status_code == 404:
+			raise RequestError('could not find user `{}`'.format(user))
+		elif r.status_code != 200:
+			raise RequestError('could not check user `{}`, error code: {}'.format(user,r.status_code))
+
+		# check repo
+		if not quiet: print('Checking github user repository...')
+		r = requests.get(f'https://github.com/{user}/{repo}')
+		if r.status_code == 404:
+			raise RequestError('could not find repository `{}` from user `{}`'.format(repo,user))
+		elif r.status_code != 200:
+			raise RequestError('could not check repository `{}` from user `{}`, error code: {}'.format(repo,user,r.status_code))
+
+		# download repo
+		if not quiet: print('Preparing to download package, download required to fetch module libs...')
+
+		# get main branch ig
+		r = requests.get(f'https://api.github.com/repos/{user}/{repo}/branches')
+		g_branch = r.json()
+		branch = g_branch[0]['name']
+
+		r = requests.get(f'https://github.com/{user}/{repo}/archive/{branch}.zip',stream=True)
+		char = ['q','w','e','r','t','y','u','i','o','p','a','s','d','f','g','h','j','k','l','z','x','c','v','b','n','m',
+				'Q','W','E','R','T','Y','U','I','O','P','A','S','D','F','G','H','J','K','L','Z','X','C','V','B','N','M',
+				'1','2','3','4','5','6','7','8','9','0']
+		ret_char = list()
+		for i in range(8):
+			ret_char.append(random.choice(char))
+		token = ''.join(ret_char)
+		if not keep_source:
+			with open(f'{token}_{repo}.zip','wb') as f:
+				f.write(r.raw.read())
+		elif keep_source:
+			with open(f'{repo}.zip','wb') as f:
+				f.write(r.raw.read())
+
+		# extract
+		if not quiet: print('Extracting Package...')
+		if not keep_source:	
+			with zipfile.ZipFile(f'{token}_{repo}.zip','r') as f:
+				f.extractall()
+		elif keep_source:
+			with zipfile.ZipFile(f'{repo}.zip','r') as f:
+				f.extractall()
+
+		# uninstalling
+		os.chdir(f'{repo}-{branch}/') # hmm...
+		if not quiet: subprocess.check_call([sys.executable, 'setup.py', 'build'])
+		else: subprocess.check_call([sys.executable, 'setup.py', '-q', 'build'])
+		for d in os.listdir('build/lib/'):
+			try:
+				shutil.rmtree(f'{site.getsitepackages()[1]}\\{d}')
+			except FileExistsError: pass
+		os.chdir('../') #hmm......
+
+		# clean temp files
+		if not quiet: print('Cleaning up...')
+		if not keep_source: os.remove(f'{token}_{repo}.zip')
+		shutil.rmtree(f'{repo}-{branch}')
+		print('Package has been successfully uninstalled!')
 
 	def download(user, repo, dir='.', quiet=False):
 		import requests, os
@@ -155,7 +235,7 @@ class Pack:
 
 parser = argparse.ArgumentParser(description='Install python packages from github.')
 parser.add_argument('-V','--version',action='version',version=f'GitPack v{__version__}')
-parser.add_argument('cmd',choices=['install','download'],type=str)
+parser.add_argument('cmd',choices=['install','download','uninstall'],type=str)
 parser.add_argument('user',type=str,help='repository author.')
 parser.add_argument('repository',type=str,help='package\'s repository.')
 
@@ -166,6 +246,7 @@ parser.add_argument('--keep_source',action='store_true',help='keep the source fi
 args = parser.parse_args()
 
 if args.cmd == 'install': Pack.install(args.user,args.repository,args.keep_source,args.quiet)
+elif args.cmd == 'uninstall': Pack.install(args.user,args.repository,args.keep_source,args.quiet)
 elif args.cmd == 'download': 
 	if args.directory: Pack.download(args.user,args.repository,args.directory,args.quiet)
 	elif not args.directory: Pack.download(args.user,args.repository,quiet=args.quiet)
