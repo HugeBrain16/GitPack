@@ -6,7 +6,7 @@ then using subprocess to build the package and install it.
 
 ### Usage
 
-to install a package type the following command:<\br>
+to install a package type the following command:</br>
 - `gitpack.py <repo-author> <repo-name>`
 - `gitpack.py HugeBrain16 iniparser2`
 
