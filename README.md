@@ -16,6 +16,10 @@ to install a package type the following command:</br>
 for example:</br>
 - `python -m gitpack install HugeBrain16 iniparser2`
 
+### Updating GitPack
+to update GitPack type the command below, make sure that you already have GitPack Installed:</br>
+`python -m gitpack install HugeBrain16 GitPack`
+
 ### Arguments
 
 #### Required
