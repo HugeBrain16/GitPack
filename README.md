@@ -12,8 +12,8 @@ then using subprocess to build the package and install it.
 
 to install a package type the following command:</br>
 - `python -m gitpack install <repo-author> <repo-name>`
-</br>
-for example:</br>
+
+for example:
 - `python -m gitpack install HugeBrain16 iniparser2`
 
 ### Updating GitPack
