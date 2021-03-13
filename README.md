@@ -1,14 +1,20 @@
 # GitPack
 
-GitPack is a github python package installer.</br>
+GitPack is a github python package installer.
+</br>
 how it works is just basically downloading the main branch of the repository,</br>
 then using subprocess to build the package and install it.
+
+### Installation
+`python setup.py install --user`
 
 ### Usage
 
 to install a package type the following command:</br>
-- `gitpack.py <repo-author> <repo-name>`
-- `gitpack.py HugeBrain16 iniparser2`
+- `python -m gitpack <repo-author> <repo-name>`
+</br>
+for example:</br>
+- `python -m gitpack HugeBrain16 iniparser2`
 
 #### Optional arguments
 
