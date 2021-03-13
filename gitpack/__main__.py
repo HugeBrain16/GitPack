@@ -115,14 +115,57 @@ class Pack:
 		shutil.rmtree(f'{repo}-{branch}')
 		print('Package has been successfully installed!')
 
+	def download(user, repo, dir='.', quiet=False):
+		import requests, os
+		# check user
+		if not quiet: print('Checking github user...')
+		r = requests.get(f'https://github.com/{user}')
+		if r.status_code == 404:
+			raise RequestError('could not find user `{}`'.format(user))
+		elif r.status_code != 200:
+			raise RequestError('could not check user `{}`, error code: {}'.format(user,r.status_code))
+
+		# check repo
+		if not quiet: print('Checking github user repository...')
+		r = requests.get(f'https://github.com/{user}/{repo}')
+		if r.status_code == 404:
+			raise RequestError('could not find repository `{}` from user `{}`'.format(repo,user))
+		elif r.status_code != 200:
+			raise RequestError('could not check repository `{}` from user `{}`, error code: {}'.format(repo,user,r.status_code))
+
+		# download repo
+		if not quiet: print('Preparing to download package...')
+
+		# get main branch ig
+		r = requests.get(f'https://api.github.com/repos/{user}/{repo}/branches')
+		g_branch = r.json()
+		branch = g_branch[0]['name']
+
+		if not os.path.exists(dir): return print('ERROR: Directory `{}` not found!'.format(dir))
+
+		r = requests.get(f'https://github.com/{user}/{repo}/archive/{branch}.zip',stream=True)
+		if dir.endswith(('/','\\')):
+			with open(f'{dir}{repo}.zip','wb') as f:
+				f.write(r.raw.read())
+		else:
+			with open(f'{dir}/{repo}.zip','wb') as f:
+				f.write(r.raw.read())
+
+		print('Package downloaded!')
+
 parser = argparse.ArgumentParser(description='Install python packages from github.')
 parser.add_argument('-V','--version',action='version',version=f'GitPack v{__version__}')
+parser.add_argument('cmd',choices=['install','download'],type=str)
 parser.add_argument('user',type=str,help='repository author.')
 parser.add_argument('repository',type=str,help='package\'s repository.')
 
+parser.add_argument('-d','--directory',type=str,help='download directory')
 parser.add_argument('-q','--quiet',action='store_true',help='disable installation progress messages.')
 parser.add_argument('--keep_source',action='store_true',help='keep the source file after installation complete.')
 
 args = parser.parse_args()
 
-Pack.install(args.user,args.repository,args.keep_source,args.quiet)
+if args.cmd == 'install': Pack.install(args.user,args.repository,args.keep_source,args.quiet)
+elif args.cmd == 'download': 
+	if args.directory: Pack.download(args.user,args.repository,args.directory,args.quiet)
+	elif not args.directory: Pack.download(args.user,args.repository,quiet=args.quiet)
