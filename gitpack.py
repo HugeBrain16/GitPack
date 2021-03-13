@@ -27,7 +27,7 @@ GitPack is a script for installing python packages from github repositories.
 
 import argparse
 
-__version__ = '0.0.2'
+__version__ = '0.0.3'
 __author__ = 'HugeBrain16 <joshtuck373@gmail.com>'
 
 # exceptions
@@ -60,11 +60,14 @@ class Pack:
 			raise RequestError('could not check repository `{}` from user `{}`, error code: {}'.format(repo,user,r.status_code))
 
 		# download repo
-		if not quiet: print('Downloading package...')
-		r = requests.get(f'https://github.com/{user}/{repo}/archive/main.zip',stream=True)
-		g_branch = f'https://github.com/{user}/{repo}/archive/main.zip'.split('/')
-		dg_branch = g_branch[len(g_branch)-1].split('.')
-		branch = dg_branch[0]
+		if not quiet: print('Preparing to download package...')
+
+		# get main branch ig
+		r = requests.get(f'https://api.github.com/repos/{user}/{repo}/branches')
+		g_branch = r.json()
+		branch = g_branch[0]['name']
+
+		r = requests.get(f'https://github.com/{user}/{repo}/archive/{branch}.zip',stream=True)
 		char = ['q','w','e','r','t','y','u','i','o','p','a','s','d','f','g','h','j','k','l','z','x','c','v','b','n','m',
 				'Q','W','E','R','T','Y','U','I','O','P','A','S','D','F','G','H','J','K','L','Z','X','C','V','B','N','M',
 				'1','2','3','4','5','6','7','8','9','0']
@@ -93,7 +96,7 @@ class Pack:
 		if not 'setup.py' in os.listdir(f'{repo}-{branch}'):
 			if not keep_source: os.remove(f'{token}_{repo}.zip')
 			shutil.rmtree(f'{repo}-{branch}')
-			raise PackageError('`setup.py` file not found in main branch.')
+			raise PackageError('`setup.py` file not found in default branch.')
 
 		# check dependencies
 		if not quiet: print('Checking dependencies...')
