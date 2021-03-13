@@ -15,7 +15,6 @@ to install a package type the following command:</br>
 
 for example:
 - `python -m gitpack install HugeBrain16 iniparser2`
-</br>
 uninstall:
 - `python -m gitpack uninstall <repo-author> <repo-name>`
 
