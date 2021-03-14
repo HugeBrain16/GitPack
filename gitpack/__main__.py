@@ -35,6 +35,7 @@ _s = parser.add_subparsers(dest='cmd')
 _p = _s.add_parser('install',help='install a package')
 _p.add_argument('user',type=str,help='repository author')
 _p.add_argument('repository',type=str,help='repository name')
+_p.add_argument('--branch',type=str,help='repository branch',default=None)
 _p.add_argument('-U','--update',action='store_true',help='Update package')
 _p.add_argument('--keep_source',action='store_true',help='keep the source file after installation complete.')
 
@@ -56,12 +57,14 @@ parser.add_argument('-q','--quiet',action='store_true',help='disable installatio
 
 args = parser.parse_args()
 
+print(args)
+
 if args.cmd == 'install':
-	Pack.install(args.cmd.user,args.cmd.repository,args.cmd.branch,args.cmd.keep_source,args.quiet,args.cmd.update)
+	Pack.install(args.user,args.repository,args.branch,args.keep_source,args.quiet,args.update)
 elif args.cmd == 'uninstall': 
-	Pack.uninstall(args.cmd.user,args.cmd.repository,args.quiet)
+	Pack.uninstall(args.user,args.repository,args.quiet)
 elif args.cmd == 'download': 
-	Pack.download(args.cmd.user,args.cmd.repository,args.cmd.branch,args.cmd.directory,args.quiet)
+	Pack.download(args.user,args.repository,args.branch,args.directory,args.quiet)
 elif args.cmd == 'list': 
 	Pack.list()
 elif args.cmd == 'update':
