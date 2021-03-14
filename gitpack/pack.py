@@ -172,6 +172,10 @@ class Pack:
 			# clean temp files
 			if not quiet: print('Cleaning up...')
 			if not keep_source: os.remove(f'{token}_{repo}.zip')
+			try:
+				shutil.rmtree(f'{site.getsitepackages()[1]}\\{repo}-{user}.gitpack-info')
+			except:
+				pass
 			shutil.rmtree(f'{repo}-{branch}')
 			print('Package has been successfully uninstalled!')
 
