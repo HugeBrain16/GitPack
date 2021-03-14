@@ -13,7 +13,16 @@ to install a package type the following command:
 for example:  
 - `python -m gitpack install HugeBrain16 iniparser2`  
 uninstall:  
-- `python -m gitpack uninstall <repo-author> <repo-name>`
+- `python -m gitpack uninstall <repo-author> <repo-name>`  
+
+#### For Developers
+add `gitpack.ini` file in main tree if the package want to be able to install  
+with **GitPack**
+
+`gitpack.ini` example:  
+```
+version=0.0.1
+```
 
 ### Updating GitPack
 to update GitPack type the command below, make sure that you already have GitPack Installed:  
