@@ -42,7 +42,7 @@ parser.add_argument('--branch',type=str,help='repository branch')
 args = parser.parse_args()
 
 if args.cmd == 'install':
-	if not args.branch: Pack.install(args.user,args.repository,args.keep_source,args.quiet)
+	if not args.branch: Pack.install(args.user,args.repository,keep_source=args.keep_source,quiet=args.quiet)
 	else: Pack.install(args.user,args.repository,args.branch,args.keep_source,args.quiet)
 elif args.cmd == 'uninstall': Pack.uninstall(args.user,args.repository,args.keep_source,args.quiet)
 elif args.cmd == 'download': 
