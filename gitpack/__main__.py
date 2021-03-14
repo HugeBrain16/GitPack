@@ -57,8 +57,6 @@ parser.add_argument('-q','--quiet',action='store_true',help='disable installatio
 
 args = parser.parse_args()
 
-print(args)
-
 if args.cmd == 'install':
 	Pack.install(args.user,args.repository,args.branch,args.keep_source,args.quiet,args.update)
 elif args.cmd == 'uninstall': 
