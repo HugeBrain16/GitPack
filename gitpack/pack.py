@@ -36,6 +36,10 @@ class Pack:
 		g_branch = r.json()
 		branch = g_branch[0]['name']
 
+		g_path = str(os.path.abspath(__file__)).split('\\')
+		del g_path[len(g_path)-1]
+		path = '\\'.join(g_path) + '\\tmp'
+
 		r = requests.get(f'https://github.com/{user}/{repo}/archive/{branch}.zip',stream=True)
 		char = ['q','w','e','r','t','y','u','i','o','p','a','s','d','f','g','h','j','k','l','z','x','c','v','b','n','m',
 				'Q','W','E','R','T','Y','U','I','O','P','A','S','D','F','G','H','J','K','L','Z','X','C','V','B','N','M',
@@ -45,37 +49,37 @@ class Pack:
 			ret_char.append(random.choice(char))
 		token = ''.join(ret_char)
 		if not keep_source:
-			with open(f'{token}_{repo}.zip','wb') as f:
+			with open(f'{path}\\{token}_{repo}.zip','wb') as f:
 				f.write(r.raw.read())
 		elif keep_source:
-			with open(f'{repo}.zip','wb') as f:
+			with open(f'{path}\\{repo}.zip','wb') as f:
 				f.write(r.raw.read())
 
 		# extract
 		if not quiet: print('Extracting Package...')
 		if not keep_source:	
-			with zipfile.ZipFile(f'{token}_{repo}.zip','r') as f:
+			with zipfile.ZipFile(f'{path}\\{token}_{repo}.zip','r') as f:
 				f.extractall()
 		elif keep_source:
-			with zipfile.ZipFile(f'{repo}.zip','r') as f:
+			with zipfile.ZipFile(f'{path}\\{repo}.zip','r') as f:
 				f.extractall()
 
 		# check dir
 		if not quiet: print('Installing package...')
-		if not 'setup.py' in os.listdir(f'{repo}-{branch}'):
-			if not keep_source: os.remove(f'{token}_{repo}.zip')
-			shutil.rmtree(f'{repo}-{branch}')
+		if not 'setup.py' in os.listdir(f'{path}\\{repo}-{branch}'):
+			if not keep_source: os.remove(f'{path}\\{token}_{repo}.zip')
+			shutil.rmtree(f'{path}\\{repo}-{branch}')
 			raise PackageError('`setup.py` file not found in default branch.')
 
 		# check dependencies
 		if not quiet: print('Checking dependencies...')
-		if 'requirements.txt' in os.listdir(f'{repo}-{branch}'):
+		if 'requirements.txt' in os.listdir(f'{path}\\{repo}-{branch}'):
 			if not quiet: print('Installing dependencies...')
 			if not quiet: subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-r', f'{repo}-{branch}/requirements.txt'])
 			if quiet: subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-q', '-r', f'{repo}-{branch}/requirements.txt'])
 
 		# installing
-		os.chdir(f'{repo}-{branch}/') # hmm...
+		os.chdir(f'{path}\\{repo}-{branch}\\') # hmm...
 		if not quiet: subprocess.check_call([sys.executable, 'setup.py', 'build'])
 		else: subprocess.check_call([sys.executable, 'setup.py', '-q', 'build'])
 		for d in os.listdir('build/lib/'):
@@ -98,8 +102,8 @@ class Pack:
 
 		# clean temp files
 		if not quiet: print('Cleaning up...')
-		if not keep_source: os.remove(f'{token}_{repo}.zip')
-		shutil.rmtree(f'{repo}-{branch}')
+		if not keep_source: os.remove(f'{path}\\{token}_{repo}.zip')
+		shutil.rmtree(f'{path}\\{repo}-{branch}')
 		print('Package has been successfully installed!')
 
 	def uninstall(user, repo, keep_source=False, quiet=False):
@@ -135,6 +139,10 @@ class Pack:
 			g_branch = r.json()
 			branch = g_branch[0]['name']
 
+			g_path = str(os.path.abspath(__file__)).split('\\')
+			del g_path[len(g_path)-1]
+			path = '\\'.join(g_path) + '\\tmp'
+
 			r = requests.get(f'https://github.com/{user}/{repo}/archive/{branch}.zip',stream=True)
 			char = ['q','w','e','r','t','y','u','i','o','p','a','s','d','f','g','h','j','k','l','z','x','c','v','b','n','m',
 					'Q','W','E','R','T','Y','U','I','O','P','A','S','D','F','G','H','J','K','L','Z','X','C','V','B','N','M',
@@ -144,23 +152,23 @@ class Pack:
 				ret_char.append(random.choice(char))
 			token = ''.join(ret_char)
 			if not keep_source:
-				with open(f'{token}_{repo}.zip','wb') as f:
+				with open(f'{path}\\{token}_{repo}.zip','wb') as f:
 					f.write(r.raw.read())
 			elif keep_source:
-				with open(f'{repo}.zip','wb') as f:
+				with open(f'{path}\\{repo}.zip','wb') as f:
 					f.write(r.raw.read())
 
 			# extract
 			if not quiet: print('Extracting Package...')
 			if not keep_source:	
-				with zipfile.ZipFile(f'{token}_{repo}.zip','r') as f:
+				with zipfile.ZipFile(f'{path}\\{token}_{repo}.zip','r') as f:
 					f.extractall()
 			elif keep_source:
-				with zipfile.ZipFile(f'{repo}.zip','r') as f:
+				with zipfile.ZipFile(f'{path}\\{repo}.zip','r') as f:
 					f.extractall()
 
 			# uninstalling
-			os.chdir(f'{repo}-{branch}/') # hmm...
+			os.chdir(f'{path}\\{repo}-{branch}\\') # hmm...
 			if not quiet: subprocess.check_call([sys.executable, 'setup.py', 'build'])
 			else: subprocess.check_call([sys.executable, 'setup.py', '-q', 'build'])
 			for d in os.listdir('build/lib/'):
@@ -171,12 +179,12 @@ class Pack:
 
 			# clean temp files
 			if not quiet: print('Cleaning up...')
-			if not keep_source: os.remove(f'{token}_{repo}.zip')
+			if not keep_source: os.remove(f'{path}\\{token}_{repo}.zip')
 			try:
 				shutil.rmtree(f'{site.getsitepackages()[1]}\\{repo}-{user}.gitpack-info')
 			except:
 				pass
-			shutil.rmtree(f'{repo}-{branch}')
+			shutil.rmtree(f'{path}\\{repo}-{branch}')
 			print('Package has been successfully uninstalled!')
 
 		else:
