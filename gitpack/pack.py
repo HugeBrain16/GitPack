@@ -14,8 +14,8 @@ class Pack:
 
 		# fetch packages info
 		for p in os.listdir(site.getsitepackages()[1]):
-			if p.endswith('gitpack-info'):
-				dat, _dat = p.split('-'), dict()
+			if p.endswith('.gitpack-info'):
+				dat, _dat = p.split('.gitpack-info'), dict()
 				_dat.update({'name': dat[0]}); _dat.update({'path': site.getsitepackages()[1] + '\\' + p})
 				dist_dat = INI(_dat['path']+'\\'+'gitpack.ini').get()
 				_dat.update({'version': dist_dat['version']})
