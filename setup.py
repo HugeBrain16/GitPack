@@ -1,12 +1,15 @@
 import setuptools
+from iniparser2 import INI
 
 def read(fname):
 	with open(fname,'r') as f:
 		return f.read()
 
+gitpack_dat = INI('gitpack.ini').get()
+
 setuptools.setup(
 name='GitPack',
-version='0.4.0',
+version=gitpack_dat['version'],
 author='HugeBrain16',
 author_email='joshtuck373@gmail.com',
 description='A script for installing python packages from github',
