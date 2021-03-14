@@ -6,9 +6,10 @@ class PackageError(Exception):
 	pass
 
 class Pack:
-	def install(user, repo, branch=None, keep_source=False, quiet=False):
+	def install(user, repo, branch=None, keep_source=False, quiet=False, update=False):
 		import requests, zipfile, os, sys, subprocess, shutil, random, site
 		from distutils.dir_util import copy_tree
+		from iniparser2 import INI
 
 		print('Preparing to install package...') # huehue
 
@@ -76,6 +77,10 @@ class Pack:
 			if not keep_source: os.remove(f'{path}\\{token}_{repo}.zip')
 			shutil.rmtree(f'{path}\\{repo}-{branch}')
 			raise PackageError('`setup.py` file not found in default branch.')
+		if not 'gitpack.ini' in os.listdir(f'{path}\\{repo}-{branch}'):
+			if not keep_source: os.remove(f'{path}\\{token}_{repo}.zip')
+			shutil.rmtree(f'{path}\\{repo}-{branch}')
+			raise PackageError('`gitpack.ini` file not found in default branch.')
 
 		# check dependencies
 		if not quiet: print('Checking dependencies...')
@@ -86,24 +91,57 @@ class Pack:
 
 		# installing
 		os.chdir(f'{path}\\{repo}-{branch}\\') # hmm...
-		if not quiet: subprocess.check_call([sys.executable, 'setup.py', 'build'])
-		else: subprocess.check_call([sys.executable, 'setup.py', '-q', 'build'])
-		for d in os.listdir('build/lib/'):
-			if not os.path.exists(f'{site.getsitepackages()[1]}\\{repo}-{user}.gitpack-info'):
+		gitpack_dat = INI('gitpack.ini').get()
+		if not quiet: print(f'{repo}-{user}=={gitpack_dat["version"]}')
+		if os.path.exists(f'{site.getsitepackages()[1]}\\{repo}-{user}.gitpack-info'):
+			try:
+				gitpack_dat_site = INI(f'{site.getsitepackages()[1]}\\{repo}-{user}.gitpack-info\\gitpack.ini').get()
+			except FileNotFoundError: return print('`gitpack.ini` file not found in gitpack-info, try uninstall and reinstalling the package')
+			if not quiet: print(f'found installed package: {repo}-{user}=={gitpack_dat_site["version"]}')
+			if gitpack_dat['version'] == gitpack_dat_site['version'] and not update:
+				return print('Package already installed, use `--update` or `-U` to update the package')
+			elif gitpack_dat['version'] != gitpack_dat_site['version'] and update:
+				if not quiet: print(f'updating package to version: {repo}-{user}=={gitpack_dat_site["version"]}')
+				if not quiet: subprocess.check_call([sys.executable, 'setup.py', 'build'])
+				else: subprocess.check_call([sys.executable, 'setup.py', '-q', 'build'])
+				for d in os.listdir('build/lib/'):
+					if not os.path.exists(f'{site.getsitepackages()[1]}\\{repo}-{user}.gitpack-info'):
+						try:
+							os.mkdir(f'{site.getsitepackages()[1]}\\{d}')
+						except FileExistsError:
+							shutil.rmtree(f'{site.getsitepackages()[1]}\\{d}')
+							os.mkdir(f'{site.getsitepackages()[1]}\\{d}')
+					copy_tree(f'build/lib/{d}',f"{site.getsitepackages()[1]}\\{d}")
+				
 				try:
-					os.mkdir(f'{site.getsitepackages()[1]}\\{d}')
-				except FileExistsError:
-					shutil.rmtree(f'{site.getsitepackages()[1]}\\{d}')
-					os.mkdir(f'{site.getsitepackages()[1]}\\{d}')
-			copy_tree(f'build/lib/{d}',f"{site.getsitepackages()[1]}\\{d}")
-		
-		try:
-			shutil.rmtree(f'{site.getsitepackages()[1]}\\{repo}-{user}.gitpack-info')
-		except: pass
-		os.mkdir(f'{site.getsitepackages()[1]}\\{repo}-{user}.gitpack-info')
-		with open(f'{site.getsitepackages()[1]}\\{repo}-{user}.gitpack-info\\LIBS','a+') as f:
+					shutil.rmtree(f'{site.getsitepackages()[1]}\\{repo}-{user}.gitpack-info')
+				except: pass
+				os.mkdir(f'{site.getsitepackages()[1]}\\{repo}-{user}.gitpack-info')
+				with open(f'{site.getsitepackages()[1]}\\{repo}-{user}.gitpack-info\\LIBS','a+') as f:
+					for d in os.listdir('build/lib/'):
+						f.write(f"{d}\r")
+				shutil.copy2('gitpack.ini',f'{site.getsitepackages()[1]}\\{repo}-{user}.gitpack-info')
+			elif gitpack_dat['version'] == gitpack_dat_site['version'] and update: return print('Package is up-to-date!')
+		else:
+			if not quiet: subprocess.check_call([sys.executable, 'setup.py', 'build'])
+			else: subprocess.check_call([sys.executable, 'setup.py', '-q', 'build'])
 			for d in os.listdir('build/lib/'):
-				f.write(f"{d}\r")
+				if not os.path.exists(f'{site.getsitepackages()[1]}\\{repo}-{user}.gitpack-info'):
+					try:
+						os.mkdir(f'{site.getsitepackages()[1]}\\{d}')
+					except FileExistsError:
+						shutil.rmtree(f'{site.getsitepackages()[1]}\\{d}')
+						os.mkdir(f'{site.getsitepackages()[1]}\\{d}')
+				copy_tree(f'build/lib/{d}',f"{site.getsitepackages()[1]}\\{d}")
+			
+			try:
+				shutil.rmtree(f'{site.getsitepackages()[1]}\\{repo}-{user}.gitpack-info')
+			except: pass
+			os.mkdir(f'{site.getsitepackages()[1]}\\{repo}-{user}.gitpack-info')
+			with open(f'{site.getsitepackages()[1]}\\{repo}-{user}.gitpack-info\\LIBS','a+') as f:
+				for d in os.listdir('build/lib/'):
+					f.write(f"{d}\r")
+			shutil.copy2('gitpack.ini',f'{site.getsitepackages()[1]}\\{repo}-{user}.gitpack-info')			
 
 		os.chdir('../') #hmm......
 

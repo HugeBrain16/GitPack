@@ -1,4 +1,5 @@
 pip
+iniparser2
 requests
 setuptools
 pytest

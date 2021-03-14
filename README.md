@@ -1,6 +1,6 @@
 # GitPack
-
-GitPack is a github python package installer.
+![GitPack](https://img.shields.io/badge/-GitPack-yellow)  
+GitPack is a github python package installer.  
 
 ### Installation
 `python install.py`, i recommended to not install gitpack with `setup.py` if you don't have gitpack installed

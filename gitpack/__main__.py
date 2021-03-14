@@ -38,12 +38,13 @@ parser.add_argument('-d','--directory',type=str,help='download directory')
 parser.add_argument('-q','--quiet',action='store_true',help='disable installation progress messages.')
 parser.add_argument('--keep_source',action='store_true',help='keep the source file after installation complete.')
 parser.add_argument('--branch',type=str,help='repository branch')
+parser.add_argument('-U','--update',action='store_true',help='Update package')
 
 args = parser.parse_args()
 
 if args.cmd == 'install':
-	if not args.branch: Pack.install(args.user,args.repository,keep_source=args.keep_source,quiet=args.quiet)
-	else: Pack.install(args.user,args.repository,args.branch,args.keep_source,args.quiet)
+	if not args.branch: Pack.install(args.user,args.repository,keep_source=args.keep_source,quiet=args.quiet,update=args.update)
+	else: Pack.install(args.user,args.repository,args.branch,args.keep_source,args.quiet,args.update)
 elif args.cmd == 'uninstall': Pack.uninstall(args.user,args.repository,args.quiet)
 elif args.cmd == 'download': 
 	if args.directory: 
