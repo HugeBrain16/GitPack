@@ -23,7 +23,12 @@ with **GitPack**
 ```
 version=0.0.1
 ```
-
+  
+Badge:
+```
+[![GitPack](https://img.shields.io/badge/-GitPack-yellow)](https://github.com/YOUR-USERNAME/YOUR-REPOSITORY-NAME)
+```
+  
 ### Updating GitPack
 to update GitPack type the command below, make sure that you already have GitPack Installed:  
 `python -m gitpack install HugeBrain16 GitPack`
