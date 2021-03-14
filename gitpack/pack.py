@@ -59,10 +59,10 @@ class Pack:
 		if not quiet: print('Extracting Package...')
 		if not keep_source:	
 			with zipfile.ZipFile(f'{path}\\{token}_{repo}.zip','r') as f:
-				f.extractall()
+				f.extractall(f"{path}\\")
 		elif keep_source:
 			with zipfile.ZipFile(f'{path}\\{repo}.zip','r') as f:
-				f.extractall()
+				f.extractall(f"{path}\\")
 
 		# check dir
 		if not quiet: print('Installing package...')
@@ -75,8 +75,8 @@ class Pack:
 		if not quiet: print('Checking dependencies...')
 		if 'requirements.txt' in os.listdir(f'{path}\\{repo}-{branch}'):
 			if not quiet: print('Installing dependencies...')
-			if not quiet: subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-r', f'{repo}-{branch}/requirements.txt'])
-			if quiet: subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-q', '-r', f'{repo}-{branch}/requirements.txt'])
+			if not quiet: subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-r', f'{path}\\{repo}-{branch}\\requirements.txt'])
+			if quiet: subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-q', '-r', f'{path}\\{repo}-{branch}\\requirements.txt'])
 
 		# installing
 		os.chdir(f'{path}\\{repo}-{branch}\\') # hmm...
