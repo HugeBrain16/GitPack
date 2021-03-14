@@ -31,7 +31,7 @@ Badge:
   
 ### Updating GitPack
 to update GitPack type the command below, make sure that you already have GitPack Installed:  
-`python -m gitpack update` || `python -m install HugeBrain16 GitPack --update`   
+`python -m gitpack update` || `python -m gitpack install HugeBrain16 GitPack --update`   
 ### Arguments
 
 #### Positional
