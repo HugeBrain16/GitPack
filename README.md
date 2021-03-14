@@ -31,31 +31,25 @@ Badge:
   
 ### Updating GitPack
 to update GitPack type the command below, make sure that you already have GitPack Installed:  
-`python -m gitpack install HugeBrain16 GitPack`
-
+`python -m gitpack update` || `python -m install HugeBrain16 GitPack --update`   
 ### Arguments
 
 #### Positional
 - `install`
-    + `user`
-    + `repository`
 - `uninstall`
-    + `user`
-    + `repository`
 - `download`
-    + `user`
-    + `repository`
 - `list`
+- `update`
 #### Optional arguments
+
+###### Positional arguments
+- `<pos-arg> --help`, ex `install --help`
 
 ###### General arguments
 - `-V --version` show version
 - `-h --help`
 
 ###### Additional arguments
-- `-d --directory`, Package download directory
 - `-q --quiet`, Disable some installation progress messages.
-- `--branch`, repository branch to download.
-- `--keep_source`, Keep the package source after installation complete (without token name).  
   
 the supported packages usually have the `setup.py` file in the 'default' branch.

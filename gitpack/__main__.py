@@ -28,33 +28,43 @@ from .pack import Pack
 import argparse
 from .__init__ import __version__, __author__
 
-parser = argparse.ArgumentParser(description='Install python packages from github.')
+parser = argparse.ArgumentParser(prog='GitPack',description='Install python packages from github.')
 parser.add_argument('-V','--version',action='version',version=f'GitPack v{__version__}')
 _s = parser.add_subparsers(dest='cmd')
-for cmd in ['install','uninstall','download']:
-	_p_s = _s.add_parser(cmd)
-	_p_s.add_argument('user',type=str,help='repository author')
-	_p_s.add_argument('repository',type=str,help='repository name')
-for cmd in ['list']:
-	_p_s = _s.add_parser(cmd)
 
-parser.add_argument('-d','--directory',type=str,help='download directory')
+_p = _s.add_parser('install',help='install a package')
+_p.add_argument('user',type=str,help='repository author')
+_p.add_argument('repository',type=str,help='repository name')
+_p.add_argument('-U','--update',action='store_true',help='Update package')
+_p.add_argument('--keep_source',action='store_true',help='keep the source file after installation complete.')
+
+_p = _s.add_parser('uninstall',help='uninstall a package')
+_p.add_argument('user',type=str,help='repository author')
+_p.add_argument('repository',type=str,help='repository name')
+_p.add_argument('user',type=str,help='repository author')
+_p.add_argument('repository',type=str,help='repository name')
+
+_p = _s.add_parser('download',help='download the package source')
+_p.add_argument('user',type=str,help='repository author')
+_p.add_argument('repository',type=str,help='repository name')
+_p.add_argument('--branch',type=str,help='repository branch',default=None)
+_p.add_argument('-d','--directory',type=str,help='download directory',default='.')
+
+# no args
+_s.add_parser('list',help='print list of installed packages')
+_s.add_parser('update',help='update GitPack')
+
 parser.add_argument('-q','--quiet',action='store_true',help='disable installation progress messages.')
-parser.add_argument('--keep_source',action='store_true',help='keep the source file after installation complete.')
-parser.add_argument('--branch',type=str,help='repository branch')
-parser.add_argument('-U','--update',action='store_true',help='Update package')
 
 args = parser.parse_args()
 
 if args.cmd == 'install':
-	if not args.branch: Pack.install(args.user,args.repository,keep_source=args.keep_source,quiet=args.quiet,update=args.update)
-	else: Pack.install(args.user,args.repository,args.branch,args.keep_source,args.quiet,args.update)
-elif args.cmd == 'uninstall': Pack.uninstall(args.user,args.repository,args.quiet)
+	Pack.install(args.user,args.repository,args.branch,args.keep_source,args.quiet,args.update)
+elif args.cmd == 'uninstall': 
+	Pack.uninstall(args.user,args.repository,args.quiet)
 elif args.cmd == 'download': 
-	if args.directory: 
-		if not args.branch: Pack.download(args.user,args.repository,dir=args.directory,quiet=args.quiet)
-		else: Pack.download(args.user,args.repository,args.branch,args.directory,args.quiet)
-	elif not args.directory:
-		if not args.branch: Pack.download(args.user,args.repository,quiet=args.quiet)
-		else: Pack.download(args.user,args.repository,args.branch,quiet=args.quiet)
-elif args.cmd == 'list': Pack.list()
+	Pack.download(args.user,args.repository,args.branch,args.directory,args.quiet)
+elif args.cmd == 'list': 
+	Pack.list()
+elif args.cmd == 'update':
+	Pack.install('HugeBrain16','GitPack',quiet=args.quiet,update=True)
