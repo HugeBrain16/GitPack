@@ -6,7 +6,7 @@ how it works is just basically downloading the main branch of the repository,</b
 then using subprocess to build the package and install it.
 
 ### Installation
-`python setup.py install --user`
+`python install.py`, i recommended to not install gitpack with `setup.py` if you don't have gitpack installed
 
 ### Usage
 
