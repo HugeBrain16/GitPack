@@ -7,16 +7,16 @@ GitPack is a github python package installer.
 
 ### Usage
 
-to install a package type the following command:</br>
+to install a package type the following command:\
 - `python -m gitpack install <repo-author> <repo-name>`
 
-for example:
-- `python -m gitpack install HugeBrain16 iniparser2`</br>
-uninstall:
+for example:\
+- `python -m gitpack install HugeBrain16 iniparser2`\
+uninstall:\
 - `python -m gitpack uninstall <repo-author> <repo-name>`
 
 ### Updating GitPack
-to update GitPack type the command below, make sure that you already have GitPack Installed:</br>
+to update GitPack type the command below, make sure that you already have GitPack Installed:\
 `python -m gitpack install HugeBrain16 GitPack`
 
 ### Arguments
@@ -28,7 +28,7 @@ to update GitPack type the command below, make sure that you already have GitPac
 
 #### Optional arguments
 
-###### General optional arguments
+###### General arguments
 - `-V --version` show version
 - `-h --help`
 
@@ -36,5 +36,5 @@ to update GitPack type the command below, make sure that you already have GitPac
 - `-d --directory`, Package download directory
 - `-q --quiet`, Disable some installation progress messages.
 - `--keep_source`, Keep the package source after installation complete (without token name).
-
+\
 the supported packages usually have the `setup.py` file in the 'default' branch.
