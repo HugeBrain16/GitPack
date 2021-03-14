@@ -123,7 +123,7 @@ class Pack:
 			if gitpack_dat_site['version'] and not update:
 				return print('Package already installed, use `--update` or `-U` to update the package')
 			elif gitpack_dat['version'] != gitpack_dat_site['version'] and update:
-				if not quiet: print(f'updating package to version: {repo}-{user}=={gitpack_dat_site["version"]}')
+				if not quiet: print(f'updating package to version: {repo}-{user}=={gitpack_dat["version"]}')
 				if not quiet: subprocess.check_call([sys.executable, 'setup.py', 'build'])
 				else: subprocess.check_call([sys.executable, 'setup.py', '-q', 'build'])
 				for d in os.listdir('build/lib/'):
