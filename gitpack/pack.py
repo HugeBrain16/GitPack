@@ -89,11 +89,12 @@ class Pack:
 		if not quiet: subprocess.check_call([sys.executable, 'setup.py', 'build'])
 		else: subprocess.check_call([sys.executable, 'setup.py', '-q', 'build'])
 		for d in os.listdir('build/lib/'):
-			try:
-				os.mkdir(f'{site.getsitepackages()[1]}\\{d}')
-			except FileExistsError:
-				shutil.rmtree(f'{site.getsitepackages()[1]}\\{d}')
-				os.mkdir(f'{site.getsitepackages()[1]}\\{d}')
+			if not os.path.exists(f'{site.getsitepackages()[1]}\\{repo}-{user}.gitpack-info'):
+				try:
+					os.mkdir(f'{site.getsitepackages()[1]}\\{d}')
+				except FileExistsError:
+					shutil.rmtree(f'{site.getsitepackages()[1]}\\{d}')
+					os.mkdir(f'{site.getsitepackages()[1]}\\{d}')
 			copy_tree(f'build/lib/{d}',f"{site.getsitepackages()[1]}\\{d}")
 		
 		try:
