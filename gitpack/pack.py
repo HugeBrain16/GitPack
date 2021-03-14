@@ -6,7 +6,7 @@ class PackageError(Exception):
 	pass
 
 class Pack:
-	def install(user, repo, keep_source=False, quiet=False):
+	def install(user, repo, branch=None, keep_source=False, quiet=False):
 		import requests, zipfile, os, sys, subprocess, shutil, random, site
 		from distutils.dir_util import copy_tree
 
@@ -34,7 +34,13 @@ class Pack:
 		# get main branch ig
 		r = requests.get(f'https://api.github.com/repos/{user}/{repo}/branches')
 		g_branch = r.json()
-		branch = g_branch[0]['name']
+		if branch == None: branch = g_branch[0]['name']
+		else:
+			branches = list()
+			for b in g_branch:
+				branches.append(b['name'])
+			if branch not in branches:
+				return print(f'ERROR: Branch `{branch}` not found!')
 
 		g_path = str(os.path.abspath(__file__)).split('\\')
 		del g_path[len(g_path)-1]
@@ -198,7 +204,7 @@ class Pack:
 			shutil.rmtree(f'{site.getsitepackages()[1]}\\{repo}-{user}.gitpack-info')
 			print('Package has been successfully uninstalled!')
 
-	def download(user, repo, dir='.', quiet=False):
+	def download(user, repo, branch=None, dir='.', quiet=False):
 		import requests, os
 		# check user
 		if not quiet: print('Checking github user...')
@@ -222,7 +228,13 @@ class Pack:
 		# get main branch ig
 		r = requests.get(f'https://api.github.com/repos/{user}/{repo}/branches')
 		g_branch = r.json()
-		branch = g_branch[0]['name']
+		if branch == None: branch = g_branch[0]['name']
+		else:
+			branches = list()
+			for b in g_branch:
+				branches.append(b['name'])
+			if branch not in branches:
+				return print(f'ERROR: Branch `{branch}` not found!')
 
 		if not os.path.exists(dir): return print('ERROR: Directory `{}` not found!'.format(dir))
 

@@ -35,6 +35,7 @@ to update GitPack type the command below, make sure that you already have GitPac
 ###### Additional arguments
 - `-d --directory`, Package download directory
 - `-q --quiet`, Disable some installation progress messages.
+- `--branch`, repository branch to download.
 - `--keep_source`, Keep the package source after installation complete (without token name).  
   
 the supported packages usually have the `setup.py` file in the 'default' branch.

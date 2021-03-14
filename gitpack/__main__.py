@@ -37,11 +37,18 @@ parser.add_argument('repository',type=str,help='package\'s repository.')
 parser.add_argument('-d','--directory',type=str,help='download directory')
 parser.add_argument('-q','--quiet',action='store_true',help='disable installation progress messages.')
 parser.add_argument('--keep_source',action='store_true',help='keep the source file after installation complete.')
+parser.add_argument('--branch',type=str,help='repository branch')
 
 args = parser.parse_args()
 
-if args.cmd == 'install': Pack.install(args.user,args.repository,args.keep_source,args.quiet)
+if args.cmd == 'install':
+	if not args.branch: Pack.install(args.user,args.repository,args.keep_source,args.quiet)
+	else: Pack.install(args.user,args.repository,args.branch,args.keep_source,args.quiet)
 elif args.cmd == 'uninstall': Pack.uninstall(args.user,args.repository,args.keep_source,args.quiet)
 elif args.cmd == 'download': 
-	if args.directory: Pack.download(args.user,args.repository,args.directory,args.quiet)
-	elif not args.directory: Pack.download(args.user,args.repository,quiet=args.quiet)
+	if args.directory: 
+		if not args.branch: Pack.download(args.user,args.repository,dir=args.directory,quiet=args.quiet)
+		else: Pack.download(args.user,args.repository,args.branch,args.directory,args.quiet)
+	elif not args.directory:
+		if not args.branch: Pack.download(args.user,args.repository,quiet=args.quiet)
+		else: Pack.download(args.user,args.repository,args.branch,quiet=args.quiet)
