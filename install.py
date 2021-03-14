@@ -26,4 +26,6 @@ with open(f'{site.getsitepackages()[1]}\\GitPack-HugeBrain16.gitpack-info\\LIBS'
 	for d in os.listdir('build/lib/'):
 		f.write(f"{d}\r")
 
+shutil.copy2('gitpack.ini',f'{site.getsitepackages()[1]}\\{repo}-{user}.gitpack-info')
+
 print('gitpack installed!')
