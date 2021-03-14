@@ -35,11 +35,17 @@ to update GitPack type the command below, make sure that you already have GitPac
 
 ### Arguments
 
-#### Required
-- `install` || `download` || `uninstall`
-- `user`
-- `repository`
-
+#### Positional
+- `install`
+    + `user`
+    + `repository`
+- `uninstall`
+    + `user`
+    + `repository`
+- `download`
+    + `user`
+    + `repository`
+- `list`
 #### Optional arguments
 
 ###### General arguments

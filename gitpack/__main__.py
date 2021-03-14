@@ -30,9 +30,13 @@ from .__init__ import __version__, __author__
 
 parser = argparse.ArgumentParser(description='Install python packages from github.')
 parser.add_argument('-V','--version',action='version',version=f'GitPack v{__version__}')
-parser.add_argument('cmd',choices=['install','download','uninstall'],type=str)
-parser.add_argument('user',type=str,help='repository author.')
-parser.add_argument('repository',type=str,help='package\'s repository.')
+_s = parser.add_subparsers(dest='cmd')
+for cmd in ['install','uninstall','download']:
+	_p_s = _s.add_parser(cmd)
+	_p_s.add_argument('user',type=str,help='repository author')
+	_p_s.add_argument('repository',type=str,help='repository name')
+for cmd in ['list']:
+	_p_s = _s.add_parser(cmd)
 
 parser.add_argument('-d','--directory',type=str,help='download directory')
 parser.add_argument('-q','--quiet',action='store_true',help='disable installation progress messages.')
@@ -53,3 +57,4 @@ elif args.cmd == 'download':
 	elif not args.directory:
 		if not args.branch: Pack.download(args.user,args.repository,quiet=args.quiet)
 		else: Pack.download(args.user,args.repository,args.branch,quiet=args.quiet)
+elif args.cmd == 'list': Pack.list()

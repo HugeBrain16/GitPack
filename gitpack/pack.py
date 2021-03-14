@@ -6,6 +6,25 @@ class PackageError(Exception):
 	pass
 
 class Pack:
+	def list():
+		import os, sys, site
+		from iniparser2 import INI
+
+		pkgs = list()
+
+		# fetch packages info
+		for p in os.listdir(site.getsitepackages()[1]):
+			if p.endswith('gitpack-info'):
+				dat, _dat = p.split('-'), dict()
+				_dat.update({'name': dat[0]}); _dat.update({'path': site.getsitepackages()[1] + '\\' + p})
+				dist_dat = INI(_dat['path']+'\\'+'gitpack.ini').get()
+				_dat.update({'version': dist_dat['version']})
+				pkgs.append(_dat)
+
+		# print
+		for p in pkgs:
+			print(f'{p["name"]}=={p["version"]}')
+
 	def install(user, repo, branch=None, keep_source=False, quiet=False, update=False):
 		import requests, zipfile, os, sys, subprocess, shutil, random, site
 		from distutils.dir_util import copy_tree
