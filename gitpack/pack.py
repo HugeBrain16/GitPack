@@ -17,7 +17,10 @@ class Pack:
 			if p.endswith('.gitpack-info'):
 				dat, _dat = p.split('.gitpack-info'), dict()
 				_dat.update({'name': dat[0]}); _dat.update({'path': site.getsitepackages()[1] + '\\' + p})
-				dist_dat = INI(_dat['path']+'\\'+'gitpack.ini').get()
+				try:
+					dist_dat = INI(_dat['path']+'\\'+'gitpack.ini').get()
+				except FileNotFoundError:
+					print(f'`gitpack.ini` not found in package info: {p}')
 				_dat.update({'version': dist_dat['version']})
 				pkgs.append(_dat)
 
