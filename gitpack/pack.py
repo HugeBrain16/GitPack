@@ -117,7 +117,7 @@ class Pack:
 				gitpack_dat_site = INI(f'{site.getsitepackages()[1]}\\{repo}-{user}.gitpack-info\\gitpack.ini').get()
 			except FileNotFoundError: return print('`gitpack.ini` file not found in gitpack-info, try uninstall and reinstalling the package')
 			if not quiet: print(f'found installed package: {repo}-{user}=={gitpack_dat_site["version"]}')
-			if gitpack_dat['version'] == gitpack_dat_site['version'] and not update:
+			if gitpack_dat_site['version'] and not update:
 				return print('Package already installed, use `--update` or `-U` to update the package')
 			elif gitpack_dat['version'] != gitpack_dat_site['version'] and update:
 				if not quiet: print(f'updating package to version: {repo}-{user}=={gitpack_dat_site["version"]}')
