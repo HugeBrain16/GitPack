@@ -1,9 +1,6 @@
 # GitPack
 
 GitPack is a github python package installer.
-</br>
-how it works is just basically downloading the main branch of the repository,</br>
-then using subprocess to build the package and install it.
 
 ### Installation
 `python install.py`, i recommended to not install gitpack with `setup.py` if you don't have gitpack installed
