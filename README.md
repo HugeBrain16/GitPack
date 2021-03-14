@@ -20,12 +20,12 @@ add `gitpack.ini` file in main tree if the package want to be able to install
 with **GitPack**
 
 `gitpack.ini` example:  
-```
+```ini
 version=0.0.1
 ```
   
 Badge:
-```
+```markdown
 [![GitPack](https://img.shields.io/badge/-GitPack-yellow)](https://github.com/YOUR-USERNAME/YOUR-REPOSITORY-NAME)
 ```
   
