@@ -6,7 +6,7 @@ def read(fname):
 
 setuptools.setup(
 name='GitPack',
-version='0.2.0',
+version='0.2.1',
 author='HugeBrain16',
 author_email='joshtuck373@gmail.com',
 description='A script for installing python packages from github',
