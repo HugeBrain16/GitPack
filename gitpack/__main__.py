@@ -49,6 +49,10 @@ _p.add_argument('repository',type=str,help='repository name')
 _p.add_argument('--branch',type=str,help='repository branch',default=None)
 _p.add_argument('-d','--directory',type=str,help='download directory',default='.')
 
+_p = _s.add_parser('install_file',help='install a package from file')
+_p.add_argument('filename',type=str,help='the package filename')
+_p.add_argument('-U','--update',action='store_true',help='Update package')
+
 # no args
 _s.add_parser('list',help='print list of installed packages')
 _s.add_parser('update',help='update GitPack')
@@ -67,3 +71,5 @@ elif args.cmd == 'list':
 	Pack.list()
 elif args.cmd == 'update':
 	Pack.install('HugeBrain16','GitPack',quiet=args.quiet,update=True)
+elif args.cmd == 'install_file':
+	Pack.install_file(args.filename,args.quiet,args.update)

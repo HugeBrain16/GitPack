@@ -5,7 +5,7 @@ def read(fname):
 	with open(fname,'r') as f:
 		return f.read()
 
-gitpack_dat = INI('gitpack.ini').get()
+gitpack_dat = INI('gitpack.ini').read()
 
 setuptools.setup(
 name='GitPack',
