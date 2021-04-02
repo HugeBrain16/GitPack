@@ -9,6 +9,7 @@ import subprocess, site, sys, os, shutil
 from distutils.dir_util import copy_tree
 
 print('Installing gitpack...')
+subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-r', 'requirements.txt'])
 subprocess.check_call([sys.executable, 'setup.py', 'build'])
 for d in os.listdir('build/lib'):
 	try:
